@@ -1,0 +1,86 @@
+import re
+
+common_passwords = [
+    "123456", "password", "123456789", "qwerty",
+    "abc123", "111111", "123123", "admin",
+    "welcome", "letmein"
+]
+
+def password_strength(password):
+    score = 0
+    suggestions = []
+
+    # Length Check
+    if len(password) >= 12:
+        score += 2
+    elif len(password) >= 8:
+        score += 1
+    else:
+        suggestions.append("Use at least 8-12 characters.")
+
+    # Uppercase
+    if re.search(r"[A-Z]", password):
+        score += 1
+    else:
+        suggestions.append("Add uppercase letters.")
+
+    # Lowercase
+    if re.search(r"[a-z]", password):
+        score += 1
+    else:
+        suggestions.append("Add lowercase letters.")
+
+    # Numbers
+    if re.search(r"\d", password):
+        score += 1
+    else:
+        suggestions.append("Add numbers.")
+
+    # Special Characters
+    if re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
+        score += 2
+    else:
+        suggestions.append("Add special characters.")
+
+    # Common Password Check
+    if password.lower() in common_passwords:
+        suggestions.append("Avoid common passwords.")
+        score = max(score - 3, 0)
+
+    # Repeated Characters
+    if re.search(r"(.)\1\1", password):
+        suggestions.append("Avoid repeated characters.")
+        score -= 1
+
+    # Strength Rating
+    if score <= 2:
+        strength = "Weak"
+    elif score <= 4:
+        strength = "Medium"
+    elif score <= 6:
+        strength = "Strong"
+    else:
+        strength = "Very Strong"
+
+    return strength, suggestions
+
+
+def generate_strong_password():
+    return "G0pi@2026#Secure"
+
+
+print("========== PASSWORD STRENGTH ANALYZER ==========")
+password = input("Enter Password: ")
+
+strength, suggestions = password_strength(password)
+
+print("\nPassword Strength:", strength)
+
+if suggestions:
+    print("\nSuggestions:")
+    for s in suggestions:
+        print("-", s)
+    print("\nSuggested Strong Password:")
+    print(generate_strong_password())
+else:
+    print("\nExcellent! Your password is secure.")
